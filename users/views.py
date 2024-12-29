@@ -4,10 +4,22 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
 from movies.models import Movie , Booking
+from django.core.paginator import Paginator
 
 def home(request):
-    movies= Movie.objects.all()
-    return render(request,'home.html',{'movies':movies})
+    # Retrieve all movies
+    movies = Movie.objects.all()
+
+    # Create paginator with 10 items per page
+    paginator = Paginator(movies, 2)  # Adjust '10' to the desired number of items per page
+
+    # Get the current page number from the request
+    page_number = request.GET.get('page')
+
+    # Get the movies for the current page
+    page_movies = paginator.get_page(page_number)
+
+    return render(request, 'home.html', {'movies': page_movies})
 def register(request):
     if request.method == 'POST':
         form=UserRegisterForm(request.POST)

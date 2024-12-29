@@ -126,28 +126,69 @@
   
     <div class="section-title">Recommended Movies</div>
     <div class="row">
-        {% if movies %}
-      {% for movie in movies|slice:":4" %}
-      <div class="col-md-3 col-sm-6">
-        <!-- Wrap the card in an anchor to make the entire card clickable -->
-        <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
-          <div class="card h-100">
-            <img
-            src="{% static 'images/' %}{{ movie.image }}"
-              class="card-img-top"
-              alt="{{ movie.name }}"
-              height="300"
-            />
-            <div class="card-body d-flex flex-column justify-content-between">
-              <h5 class="card-title text-center">{{ movie.name }}</h5>
-              <p class="card-text text-center">{{ movie.description }}</p>
-              <!-- Replace with the appropriate movie description field -->
-            </div>
+      {% if movies %}
+        {% for movie in movies %}
+          <div class="col-md-3 col-sm-6">
+            <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
+              <div class="card h-100">
+                <img
+                  src="{% static 'images/' %}{{ movie.image }}"
+                  class="card-img-top"
+                  alt="{{ movie.name }}"
+                  height="300"
+                />
+                <div class="card-body d-flex flex-column justify-content-between">
+                  <h5 class="card-title text-center">{{ movie.name }}</h5>
+                  <p class="card-text text-center">{{ movie.description }}</p>
+                </div>
+              </div>
+            </a>
           </div>
-        </a>
-      </div>
-      {% endfor %}
+        {% endfor %}
       {% endif %}
+    </div>
+    
+    <!-- Pagination Controls -->
+    <div class="pagination mt-4">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          {% if movies.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1" aria-label="First">
+                <span aria-hidden="true">&laquo;&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ movies.previous_page_number }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+          {% endif %}
+    
+          {% for num in movies.paginator.page_range %}
+            {% if movies.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > movies.number|add:'-3' and num < movies.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+    
+          {% if movies.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ movies.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ movies.paginator.num_pages }}" aria-label="Last">
+                <span aria-hidden="true">&raquo;&raquo;</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
     </div>
   
     <div class="section-title">The Best of Live Events</div>
