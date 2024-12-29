@@ -8,3 +8,4 @@ typing_extensions==4.7.0
 channels==4.0.0
 channels_redis==4.2.1
 whitenoise
+django-embed-video
